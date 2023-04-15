@@ -19,50 +19,61 @@ function insertNode(arr, root, i, n) {
 	return root;
 }
 function buildTree() {
-	var arr = inputElem.value.trim().split(" ");
-	arr = arr.map(function(item) {
-		return parseInt(item, 10);
-	});
-	var root = insertNode(arr, null, 0, arr.length);
-	renderTree(root, treeElem);
+    var input = document.getElementById("input").value;
+    var values = input.split(",");
+    var root = null;
+    for (var i = 0; i < values.length; i++) {
+        var value = values[i].trim();
+        if (value !== "") {
+            root = insertNode(root, new TreeNode(value));
+        }
+    }
+    renderTree(root, document.getElementById("tree"));
 }
 
-function renderTree(node, parentElem) {
-	if (!node) {
-		return;
-	}
-	var nodeElem = document.createElement("div");
-	nodeElem.className = "node";
-	nodeElem.innerText = node.value;
-	var colorIndex = getColorIndex(node);
-	nodeElem.style.backgroundColor = COLORS[colorIndex];
-	nodeElem.addEventListener("mouseenter", function() {
-		nodeElem.classList.add("hover");
-	});
-	nodeElem.addEventListener("mouseleave", function() {
-		nodeElem.classList.remove("hover");
-	});
-	nodeElem.addEventListener("click", function() {
-		if (selectedNode) {
-			selectedNode.classList.remove("selected");
-		}
-		nodeElem.classList.add("selected");
-		selectedNode = nodeElem;
-	});
-	var leftEdge = document.createElement("span");
-	leftEdge.className = "edge left";
-	var rightEdge = document.createElement("span");
-	rightEdge.className = "edge right";
-	if (node.left) {
-		renderTree(node.left, nodeElem);
-		nodeElem.insertBefore(leftEdge, nodeElem.firstChild);
-	}
-	if (node.right) {
-		renderTree(node.right, nodeElem);
-		nodeElem.appendChild(rightEdge);
-	}
-	parentElem.appendChild(nodeElem);
+
+function renderNode(node, container) {
+    var element = document.createElement("div");
+    element.innerText = node.value;
+    element.classList.add("node");
+    element.style.backgroundColor = node.color;
+    element.addEventListener("mouseover", function() {
+        element.style.boxShadow = "0px 0px 10px #666";
+    });
+    element.addEventListener("mouseout", function() {
+        element.style.boxShadow = "";
+    });
+    element.addEventListener("click", function() {
+        var action = prompt("Enter 'L' to add a node to the left, 'R' to add a node to the right, or 'E' to edit the current node:");
+        if (action === "L") {
+            var value = prompt("Enter the value for the new node:");
+            if (value !== null) {
+                insertNode(node, new TreeNode(value));
+                renderTree(container._root, container);
+            }
+        } else if (action === "R") {
+            var value = prompt("Enter the value for the new node:");
+            if (value !== null) {
+                insertNode(node, new TreeNode(value));
+                renderTree(container._root, container);
+            }
+        } else if (action === "E") {
+            var value = prompt("Enter the new value for the node:");
+            if (value !== null) {
+                node.value = value;
+                renderTree(container._root, container);
+            }
+        }
+    });
+    container.appendChild(element);
+    if (node.left !== null) {
+        renderNode(node.left, element);
+    }
+    if (node.right !== null) {
+        renderNode(node.right, element);
+    }
 }
+
 
 function getColorIndex(node) {
 	var siblings = getSiblings(node);

@@ -92,3 +92,7 @@ body {
     transform: rotate(45deg);
     margin-right: 5px;
 }
+
+.node.hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
