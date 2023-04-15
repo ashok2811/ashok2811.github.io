@@ -3,6 +3,12 @@ var inputElem = document.getElementById("input-array");
 var btnElem = document.getElementById("btn-build-tree");
 var selectedNode = null;
 
+function TreeNode(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+} 
+
 function insertNode(arr, root, i, n) {
 	if (i < n) {
 		var temp = new TreeNode(arr[i]);
@@ -12,7 +18,6 @@ function insertNode(arr, root, i, n) {
 	}
 	return root;
 }
-
 function buildTree() {
 	var arr = inputElem.value.trim().split(" ");
 	arr = arr.map(function(item) {
