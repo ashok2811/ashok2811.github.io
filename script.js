@@ -34,6 +34,14 @@ function renderTree(node, parentElem) {
 	var nodeElem = document.createElement("div");
 	nodeElem.className = "node";
 	nodeElem.innerText = node.value;
+	var colorIndex = getColorIndex(node);
+	nodeElem.style.backgroundColor = COLORS[colorIndex];
+	nodeElem.addEventListener("mouseenter", function() {
+		nodeElem.classList.add("hover");
+	});
+	nodeElem.addEventListener("mouseleave", function() {
+		nodeElem.classList.remove("hover");
+	});
 	nodeElem.addEventListener("click", function() {
 		if (selectedNode) {
 			selectedNode.classList.remove("selected");
@@ -55,6 +63,34 @@ function renderTree(node, parentElem) {
 	}
 	parentElem.appendChild(nodeElem);
 }
+
+function getColorIndex(node) {
+	var siblings = getSiblings(node);
+	var colorIndex = Math.floor(Math.random() * COLORS.length);
+	for (var i = 0; i < siblings.length; i++) {
+		if (siblings[i] !== node && siblings[i].style.backgroundColor === COLORS[colorIndex]) {
+			return getColorIndex(node);
+		}
+	}
+	return colorIndex;
+}
+
+function getSiblings(node) {
+	if (!node || !node.parentElement) {
+		return [];
+	}
+	var siblings = [];
+	var childNodes = node.parentElement.childNodes;
+	for (var i = 0; i < childNodes.length; i++) {
+		if (childNodes[i].nodeType === Node.ELEMENT_NODE && childNodes[i] !== node) {
+			siblings.push(childNodes[i]);
+		}
+	}
+	return siblings;
+}
+
+var COLORS = ["#f94144", "#f8961e", "#f9c74f", "#90be6d", "#43aa8b", "#577590", "#6c757d", "#343a40", "#dc3545", "#fd7e14", "#ffc107", "#28a745", "#20c997", "#17a2b8", "#6c757d", "#343a40"];
+
 
 function editNode() {
 	if (!selectedNode) {
