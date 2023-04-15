@@ -74,6 +74,11 @@ function renderNode(node, container) {
     }
 }
 
+function renderTree(root, container) {
+    container.innerHTML = "";
+    renderNode(root, container);
+}
+
 
 function getColorIndex(node) {
 	var siblings = getSiblings(node);
