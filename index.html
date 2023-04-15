@@ -1,33 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Binary Tree Example</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+	<title>Tree Data Structure Visualizer</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		.node {
+			display: inline-block;
+			position: relative;
+			margin: 10px;
+			border: 1px solid black;
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+			text-align: center;
+			line-height: 50px;
+		}
+		.edge {
+			display: inline-block;
+			position: absolute;
+			border-bottom: 1px solid black;
+			width: 50px;
+			height: 20px;
+			left: 25px;
+			bottom: -20px;
+			z-index: -1;
+		}
+		.left {
+			left: 0;
+			transform: rotate(-45deg);
+		}
+		.right {
+			right: 0;
+			transform: rotate(45deg);
+		}
+	</style>
 </head>
 <body>
-    <div class="tree">
-        <ul>
-          <li>
-            <span>1</span>
-            <ul>
-              <li>
-                <span>2</span>
-                <ul>
-                  <li>
-                    <span>4</span>
-                  </li>
-                  <li>
-                    <span>5</span>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <span>3</span>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-  <script src="script.js"></script>
+	<div>
+		<label for="input-array">Input Array: </label>
+		<input type="text" id="input-array">
+		<button id="btn-build-tree">Build Tree</button>
+	</div>
+	<div id="tree"></div>
+	<script>
+		var treeElem = document.getElementById("tree");
+		var inputElem = document.getElementById("input-array");
+		var btnElem = document.getElementById("btn-build-tree");
+
+		function buildTree() {
+			var arr = inputElem.value.trim().split(" ");
+			arr = arr.map(function(item) {
+				return parseInt(item, 10);
+			});
+			var root = insertNode(arr, null, 0, arr.length);
+			renderTree(root, treeElem);
+		}
+
+		function insertNode(arr, root, i, n) {
+			if (i < n) {
+				var new_node = {
+					value: arr[i],
+					left: null,
+					right: null
+				};
+				root = new_node;
+				root.left = insertNode(arr, root.left, 2 * i + 1, n);
+				root.right = insertNode(arr, root.right, 2 * i + 2, n);
+			}
+			return root;
+		}
+
+		function renderTree(nodeData, elem) {
+			if (!nodeData) {
+				return;
+			}
+
+			var nodeElem = document.createElement("div");
+			nodeElem.classList.add("node");
+			nodeElem.textContent = nodeData.value;
+			elem.appendChild(nodeElem);
+
+			if (nodeData.left) {
+				var leftEdge = document.createElement("div");
+				leftEdge.classList.add("edge", "left");
+				nodeElem.appendChild(leftEdge);
+				renderTree(nodeData.left, elem);
+			}
+
+			if (nodeData.right) {
+				var rightEdge = document.createElement("div");
+				rightEdge.classList.add("edge", "right");
+				nodeElem.appendChild(rightEdge);
+				renderTree(nodeData.right, elem);
+			}
+		}
+
+		btnElem.addEventListener("click", buildTree);
+	</script>
 </body>
 </html>
