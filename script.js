@@ -33,6 +33,9 @@ function buildTree() {
 
 
 function renderNode(node, container) {
+    if (!node) {
+        return;
+    }
     var element = document.createElement("div");
     element.innerText = node.value;
     element.classList.add("node");
